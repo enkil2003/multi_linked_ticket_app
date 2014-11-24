@@ -1,0 +1,68 @@
+<div>
+<table class="relations">
+  {{#if parents}}
+  <tr class="header"><td colspan="3">Parent tickets</td></tr>
+  {{#each parents}}
+  <tr>
+    <td rowspan="2" class="centered">
+      <div class="ticket_status_label {{ticket.status}}">
+        <strong>{{ticket.status}}</strong>
+      </div>
+      <div class="large-id">
+        <a href="#/tickets/{{ticket.id}}">#{{ticket.id}}</a>
+      </div>
+    </td>
+    <td colspan="2">{{ticket.subject}}</td>
+  </tr>
+  <tr>
+    {{#if assignee}}
+    <td>{{assignee}}</td>
+    {{else}}
+    <td class="null">Unassigned</td>
+    {{/if}}
+    {{#if group.name}}
+    <td>{{group.name}}</td>
+    {{else}}
+    <td class="null">No group</td>
+    {{/if}}
+  </tr>
+  {{/each}}
+  {{/if}}
+
+  {{#if children}}
+  <tr class="header"><td colspan="3">Child tickets</td></tr>
+  {{#each children}}
+  <tr>
+    <td rowspan="2" class="centered">
+      <div class="ticket_status_label {{ticket.status}}">
+        <strong>{{ticket.status}}</strong>
+      </div>
+      <div class="large-id">
+        <a href="#/tickets/{{ticket.id}}">#{{ticket.id}}</a>
+      </div>
+    </td>
+    <td colspan="2">{{ticket.subject}}</td>
+  </tr>
+  <tr>
+    {{#if assignee}}
+    <td>{{assignee}}</td>
+    {{else}}
+    <td class="null">Unassigned</td>
+    {{/if}}
+    {{#if group.name}}
+    <td>{{group.name}}</td>
+    {{else}}
+    <td class="null">No group</td>
+    {{/if}}
+  </tr>
+  <tr>
+  {{/each}}
+  {{/if}}
+</table>
+</div>
+
+<div class="well">
+  <div class="row-fluid centered">
+    <a class="new-linked-ticket btn btn-success btn-large">{{t "create_ticket"}}</a>
+  </div>
+</div>

@@ -47,7 +47,7 @@
       "group_label": "Mitarbeitergruppe",
       "name_label": "Mitarbeitername"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "Aktuelle Ticketbeschreibung kopieren"
     },
     "ccs": {

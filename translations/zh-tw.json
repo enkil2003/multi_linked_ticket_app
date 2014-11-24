@@ -47,7 +47,7 @@
       "group_label": "受託人組",
       "name_label": "受託人名稱"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "複製當前工單描述"
     },
     "ccs": {

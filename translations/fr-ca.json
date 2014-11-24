@@ -47,7 +47,7 @@
       "group_label": "Groupe de l’assigné",
       "name_label": "Nom de l’assigné"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "Copier la description du billet actuel"
     },
     "ccs": {

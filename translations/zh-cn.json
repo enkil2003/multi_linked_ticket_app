@@ -47,7 +47,7 @@
       "group_label": "受托人组",
       "name_label": "受托人名称"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "复制当前的工单描述"
     },
     "ccs": {

@@ -47,7 +47,7 @@
       "group_label": "Grupo atribuído",
       "name_label": "Nome do atribuído"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "Copiar descrição atual do ticket"
     },
     "ccs": {

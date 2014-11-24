@@ -47,7 +47,7 @@
       "group_label": "担当者グループ",
       "name_label": "担当者名"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "現在のチケットの説明をコピー"
     },
     "ccs": {

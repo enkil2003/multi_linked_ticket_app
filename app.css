@@ -47,3 +47,27 @@ div.spinner
   color: #a94442;
   font-size: 95%;
 }
+
+.relations {
+  text-align: left;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.relations TD  {
+  padding: 5px;
+  border: 1px solid #ddd;
+}
+
+.header {
+  background-color: #f7f7f7;
+}
+
+.large-id {
+  padding-top: 5px;
+  font-size: large;
+}
+
+.null {
+  color: lightgrey;
+}

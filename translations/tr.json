@@ -47,8 +47,8 @@
       "group_label": "Assignee group",
       "name_label": "Assignee name"
     },
-    "copy_description": {
-      "label": "Copy current ticket description"
+    "copy_content": {
+      "label": "Copy current ticket subject and description"
     },
     "ccs": {
       "label": "CCs:"

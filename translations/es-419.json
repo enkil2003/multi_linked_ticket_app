@@ -47,7 +47,7 @@
       "group_label": "Grupo de agente asignado",
       "name_label": "Nombre de agente asignado"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "Copiar descripción de ticket actual"
     },
     "ccs": {

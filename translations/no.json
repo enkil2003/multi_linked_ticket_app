@@ -47,7 +47,7 @@
       "group_label": "Gruppe for saksansvarlig",
       "name_label": "Navn på saksansvarlig"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "Kopier gjeldende saksbeskrivelse"
     },
     "ccs": {

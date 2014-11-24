@@ -47,7 +47,7 @@
       "group_label": "Gruppe med ansvarlige",
       "name_label": "Navn på ansvarlig"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "Kopier aktuel ticket-beskrivelse"
     },
     "ccs": {

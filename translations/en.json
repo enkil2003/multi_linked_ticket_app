@@ -123,10 +123,10 @@
         "value": "Assignee name"
       }
     },
-    "copy_description": {
+    "copy_content": {
       "label": {
-        "title": "This is a checkbox option to copy the current ticket description into the future ticket created through the app",
-        "value": "Copy current ticket description"
+        "title": "This is a checkbox option to copy the current ticket subject and description into the future ticket created through the app",
+        "value": "Copy current ticket subject and description"
       }
     },
     "ccs": {

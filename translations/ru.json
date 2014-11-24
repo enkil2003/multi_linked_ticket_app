@@ -47,7 +47,7 @@
       "group_label": "Группа исполнителя",
       "name_label": "Имя исполнителя"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "Копировать описание текущего тикета"
     },
     "ccs": {

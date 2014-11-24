@@ -9,18 +9,18 @@
       'ticket.status.changed'           : 'loadIfDataReady',
       // AJAX EVENTS
       'createChildTicket.done'          : 'createChildTicketDone',
-      'fetchTicket.done'                : 'fetchTicketDone',
+      'fetchTickets.done'               : 'fetchTicketsDone',
       'fetchGroups.done'                : function(data){ this.fillGroupWithCollection(data.groups); },
       'createChildTicket.fail'          : 'genericAjaxFailure',
       'updateTicket.fail'               : 'genericAjaxFailure',
-      'fetchTicket.fail'                : 'displayHome',
+      'fetchTickets.fail'               : 'displayHome',
       'autocompleteRequester.fail'      : 'genericAjaxFailure',
       'fetchGroups.fail'                : 'genericAjaxFailure',
       'fetchUsersFromGroup.fail'        : 'genericAjaxFailure',
       // DOM EVENTS
       'click .new-linked-ticket'        : 'displayForm',
       'click .create-linked-ticket'     : 'create',
-      'click .copy_description'         : 'copyDescription',
+      'click .copy_content'             : 'copyContent',
       'change select[name=requester_type]' : 'handleRequesterTypeChange',
       'change select[name=assignee_type]' : function(event){
         if (this.$(event.target).val() == 'custom')
@@ -30,8 +30,8 @@
       'change .group'                   : 'groupChanged',
       'click .token .delete'            : function(e) { this.$(e.target).parent('li.token').remove(); },
       'keypress .add_token input'       : function(e) { if(e.charCode === 13) { this.formTokenInput(e.target, true);}},
-      'input .add_token input'            : function(e) { this.formTokenInput(e.target); },
-      'focusout .add_token input'         : function(e) { this.formTokenInput(e.target,true); },
+      'input .add_token input'          : function(e) { this.formTokenInput(e.target); },
+      'focusout .add_token input'       : function(e) { this.formTokenInput(e.target,true); },
       'focusout .linked_ticket_form [required]' : 'handleRequiredFieldFocusout'
     },
 
@@ -56,9 +56,16 @@
           type: 'PUT'
         };
       },
-      fetchTicket: function(id){
+      // fetchTicket: function(id){
+      //   return {
+      //     url: '/api/v2/tickets/' + id + '.json?include=groups,users',
+      //     dataType: 'json',
+      //     type: 'GET'
+      //   };
+      // },
+      fetchTickets: function(ids){
         return {
-          url: '/api/v2/tickets/' + id + '.json?include=groups,users',
+          url: helpers.fmt('/api/v2/tickets/show_many.json?ids=%@&include=groups,users', ids.join(",")),
           dataType: 'json',
           type: 'GET'
         };
@@ -100,12 +107,10 @@
     },
 
     loadIfDataReady: function(){
-      if (this.ticket() &&
-          this.ticket().id() &&
-          !_.isUndefined(this.ancestryValue())){
-
-        if (this.hasChild() || this.hasParent())
-          return this.ajax('fetchTicket', this.childID() || this.parentID());
+      var ancestry = this.ancestryValue();
+      if (this.ticket() && this.ticket().id() && !_.isUndefined(ancestry)){
+        if (this.hasChildren() || this.hasParents())
+          return this.ajax('fetchTickets', _.compact(_.union(ancestry.parent_ids, ancestry.child_ids)));
 
         this.displayHome();
       }
@@ -282,42 +287,40 @@
 
     // EVENT CALLBACKS
 
-    fetchTicketDone: function(data){
-      var assignee = _.find(data.users, function(user){
-        return user.id == data.ticket.assignee_id;
+    fetchTicketsDone: function(data){
+      var ancestryFieldId = this.ancestryFieldId();
+      var ancestry = this.ancestryValue();
+      var parents = [];
+      var children = [];
+
+      _.each(data.tickets, function(ticket) {
+        var item = {
+          assignee: _.find(data.users, function(user){
+            return user.id == ticket.assignee_id;
+          }),
+          custom_field: _.find(ticket.custom_fields, function(field){
+            return field.id == ancestryFieldId;
+          }, this),
+          group: _.find(data.groups, function(item){
+            return item.id == ticket.group_id;
+          }),
+          ticket: ticket
+        };
+
+        if (item.assignee) {
+          item.assignee = item.assignee.name;
+        }
+
+        if (_.contains(ancestry.parent_ids, ticket.id)) {
+          parents.push(item);
+        }
+        if (_.contains(ancestry.child_ids, ticket.id)) {
+          children.push(item);
+        }
       });
 
-      var custom_field = _.find(data.ticket.custom_fields, function(field){
-        return field.id == this.ancestryFieldId();
-      }, this);
-
-      var is_child = this.childRegex.test(custom_field.value);
-
-
-      var group = _.find(data.groups, function(item){
-        return item.id == data.ticket.group_id;
-      });
-
-      if (assignee)
-        assignee = assignee.name;
-
-      data.ticket.locale = {};
-      _.each(['status', 'type'], (function(name) {
-        data.ticket.locale[name] = this.localizeTicketValue(name, data.ticket[name]);
-      }).bind(this));
-
-      var parent_closed = false;
-
-      if(this.ticket().status() == "closed") {
-        parent_closed = true;
-      }
-
-      this.switchTo('has_relation', { ticket: data.ticket,
-                                      is_child: is_child,
-                                      assignee: assignee,
-                                      group: group,
-                                      closed_warn: parent_closed
-                                    });
+      this.switchTo('has_relations', {parents: parents,
+                                      children: children});
     },
 
     localizeTicketValue: function(name, value) {
@@ -326,24 +329,25 @@
     },
 
     createChildTicketDone: function(data){
-      var value = "parent_of:" + data.ticket.id;
+      var ancestry = this.ancestryValue();
+      ancestry.child_ids.push(data.ticket.id);
+      var JSONancestry = JSON.stringify(ancestry);
 
-      if(this.ticket().status() != "closed") {
-        this.ticket().customField("custom_field_" + this.ancestryFieldId(),value);
-
+      if (this.ticket().status() != "closed") {
+        this.ticket().customField("custom_field_" + this.ancestryFieldId(), JSONancestry);
         this.ajax('updateTicket',
                   this.ticket().id(),
                   { "ticket": { "custom_fields": [
-                    { "id": this.ancestryFieldId(), "value": value }
+                    { "id": this.ancestryFieldId(), "value": JSONancestry }
                   ]}});
       }
 
-      this.ajax('fetchTicket', data.ticket.id);
+      this.ajax('fetchTickets', _.compact(_.union(ancestry.parent_ids, ancestry.child_ids)));
 
       this.spinnerOff();
     },
 
-    copyDescription: function(){
+    copyContent: function(){
       var descriptionDelimiter = helpers.fmt("\n--- %@ --- \n", this.I18n.t("delimiter"));
       var description = this.formDescription()
         .split(descriptionDelimiter);
@@ -354,6 +358,7 @@
         ret += descriptionDelimiter + this.ticket().description();
 
       this.formDescription(ret);
+      this.formSubject(this.ticket().subject());
     },
 
     bindAutocompleteOnRequesterEmail: function(){
@@ -412,11 +417,13 @@
     // FORM TO JSON
 
     childTicketAttributes: function(){
+      var childAncestry = {parent_ids: [this.ticket().id()],
+                           child_ids: []};
       var params = {
         "subject": this.formSubject(),
         "comment": { "body": this.formDescription() },
         "custom_fields": [
-          { id: this.ancestryFieldId(), value: 'child_of:' + this.ticket().id() }
+          { id: this.ancestryFieldId(), value: JSON.stringify(childAncestry) }
         ]
       };
 
@@ -552,29 +559,42 @@
 
       return field.hide();
     },
+
     ancestryValue: function(){
-      return this.ticket().customField("custom_field_" + this.ancestryFieldId());
+      var value = this.ticket().customField("custom_field_" + this.ancestryFieldId());
+
+      // if we find parent_of or child_of then this ticket was created by Zendesk's
+      // Linked Ticket App and we will convert it to our Multi format.
+      if (_.isNull(value) || _.isUndefined(value) || _.isEmpty(value)) {
+        return {parent_ids: [], child_ids: []};
+      }
+      else if (this.parentRegex.test(value)) {
+        var child_id = int(this.parentRegex.exec(value));
+        return {parent_ids: [], child_ids: [child_id]};
+      }
+      else if (this.childRegex.test(value)) {
+        var parent_id = this.childRegex.exec(value);
+        return {parent_ids: [parent_id], child_ids: []};
+      }
+      else {
+        // Otherwise assume value is a JSON structure to parse
+        return JSON.parse(value);
+      }
     },
+
     ancestryFieldId: function(){
       return this.setting('ancestry_field');
     },
-    hasChild: function(){
-      return this.parentRegex.test(this.ancestryValue());
-    },
-    hasParent: function(){
-      return this.childRegex.test(this.ancestryValue());
-    },
-    childID: function(){
-      if (!this.hasChild())
-        return;
 
-      return this.parentRegex.exec(this.ancestryValue())[1];
+    hasChildren: function(){
+      var value = this.ancestryValue();
+      return _.has(value, 'child_ids') && !_.isEmpty(value.child_ids);
     },
-    parentID: function(){
-      if (!this.hasParent())
-        return;
 
-      return this.childRegex.exec(this.ancestryValue())[1];
+    hasParents: function(){
+      var value = this.ancestryValue();
+      return _.has(value, 'parent_ids') && !_.isEmpty(value.parent_ids);
     }
+
   };
 }());

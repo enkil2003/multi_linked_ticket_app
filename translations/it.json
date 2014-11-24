@@ -47,7 +47,7 @@
       "group_label": "Gruppo assegnatario",
       "name_label": "Nome assegnatario"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "Copia descrizione dal ticket corrente"
     },
     "ccs": {

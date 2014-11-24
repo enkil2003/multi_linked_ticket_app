@@ -47,7 +47,7 @@
       "group_label": "담당자 그룹",
       "name_label": "담당자 이름"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "현재 티켓 설명 복사"
     },
     "ccs": {

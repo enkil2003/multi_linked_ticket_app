@@ -89,16 +89,18 @@
         </ul>
       </div>
 
+      <div style="clear:both"/>
+
       <div class="control-group">
-        <label>
-          <strong>* {{t "form.subject.label"}}</strong>
-          <input type="text" class="subject span12" required>
+        <label class="checkbox">
+          <input type="checkbox" class="copy_content">{{t "form.copy_content.label"}}
         </label>
       </div>
 
       <div class="control-group">
-        <label class="checkbox">
-          <input type="checkbox" class="copy_description">{{t "form.copy_description.label"}}
+        <label>
+          <strong>* {{t "form.subject.label"}}</strong>
+          <input type="text" class="subject span12" required>
         </label>
       </div>
 

@@ -47,7 +47,7 @@
       "group_label": "Medewerkersgroep",
       "name_label": "Medewerkernaam"
     },
-    "copy_description": {
+    "copy_content": {
       "label": "Huidige ticketbeschrijving kopiëren"
     },
     "ccs": {
