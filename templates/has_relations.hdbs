@@ -5,9 +5,9 @@
   {{#each parents}}
   <tr>
     <td rowspan="2" class="centered">
-      <div class="ticket_status_label {{ticket.status}}">
+      <a href="#/tickets/{{ticket.id}}" class="ticket_status_label block {{ticket.status}}">
         <strong>{{ticket.status}}</strong>
-      </div>
+      </a>
       <div class="large-id">
         <a href="#/tickets/{{ticket.id}}">#{{ticket.id}}</a>
       </div>
@@ -34,16 +34,16 @@
   {{#each children}}
   <tr>
     <td rowspan="2" class="centered">
-      <div class="ticket_status_label {{ticket.status}}">
+      <a href="#/tickets/{{ticket.id}}" class="ticket_status_label block {{ticket.status}}">
         <strong>{{ticket.status}}</strong>
-      </div>
+      </a>
       <div class="large-id">
         <a href="#/tickets/{{ticket.id}}">#{{ticket.id}}</a>
       </div>
     </td>
     <td colspan="2">{{ticket.subject}}</td>
   </tr>
-  <tr>
+  <tr data-href="#/tickets/{{ticket.id}}">
     {{#if assignee}}
     <td>{{assignee}}</td>
     {{else}}
