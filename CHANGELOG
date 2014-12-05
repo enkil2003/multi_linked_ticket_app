@@ -1,3 +1,15 @@
+2014-12-05 Matt Taylor <matt.taylor@stratema.co.uk>
+	* Automatically add parent recipient as recipient for new child ticket.
+	* Remove ability to create child tickets for closed tickets.
+	* Bump to 0.1.2
+2014-11-25 Matt Taylor <matt.taylor@stratema.co.uk>
+	* Raw file for logos
+	* Fix logo and compatibility with reading legacy linked ticket up data format.
+	* Bump to 0.1.1
+2014-11-24 Matt Taylor <matt.taylor@stratema.co.uk>
+	* First version of the linked ticket app that can handle multiple child tickets.
+	* Use SemVer
+	* Bump to 0.1.0
 2013-02-15 Pierre Nespo <pierre.nespo@gmail.com>
 	* Bump to v1.0: Major change is the modification of the parameter name (from data_field to ancestry_field)
 2013-03-07 Pierre Nespo <pierre.nespo@gmail.com>
