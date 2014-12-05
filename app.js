@@ -109,6 +109,7 @@
     loadIfDataReady: function(){
       var ancestry = this.ancestryValue();
       console.log(ancestry);
+
       if (this.ticket() && this.ticket().id() && !_.isUndefined(ancestry)){
         if (this.hasChildren() || this.hasParents())
           return this.ajax('fetchTickets', _.compact(_.union(ancestry.parent_ids, ancestry.child_ids)));
@@ -423,6 +424,7 @@
       var params = {
         "subject": this.formSubject(),
         "comment": { "body": this.formDescription() },
+        "recipient": this.host.ticket.data.recipient,
         "custom_fields": [
           { id: this.ancestryFieldId(), value: JSON.stringify(childAncestry) }
         ]
@@ -570,11 +572,11 @@
         return {parent_ids: [], child_ids: []};
       }
       else if (this.parentRegex.test(value)) {
-        var child_id = parseInt(this.parentRegex.exec(value)[1]);
+        var child_id = parseInt(this.parentRegex.exec(value)[1], 10);
         return {parent_ids: [], child_ids: [child_id]};
       }
       else if (this.childRegex.test(value)) {
-        var parent_id = parseInt(this.childRegex.exec(value)[1]);
+        var parent_id = parseInt(this.childRegex.exec(value)[1], 10);
         return {parent_ids: [parent_id], child_ids: []};
       }
       else {
